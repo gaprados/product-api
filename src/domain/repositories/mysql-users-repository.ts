@@ -1,23 +1,13 @@
 import { PrismaClient } from "@prisma/client";
 import { prisma } from "../../infra/lib/prisma";
-import { CreateUserRequest, CreateUserResponse } from "../dtos/CreateUserDTO";
+import { CreateUserRequest, CreateUserResponse, UserDTO } from "../dtos/CreateUserDTO";
 import { IUserseRepository } from "../interfaces/IUsersRepository";
 
-export class MySqlUsersRepository implements IUserseRepository {
+export class DBUsersRepositoy implements IUserseRepository {
   private prisma: PrismaClient
 
   constructor() {
     this.prisma = prisma;
-  }
-
-  public async findByEmail(email: string): Promise<boolean> {
-    const user = await this.prisma.user.findUnique({
-      where: {
-        email,
-      }
-    })
-
-    return !!user;
   }
 
   public async create(data: CreateUserRequest): Promise<CreateUserResponse> {
@@ -40,5 +30,30 @@ export class MySqlUsersRepository implements IUserseRepository {
     })
 
     return user;
+  }
+
+  public async findByEmail(email: string): Promise<CreateUserResponse | null> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        email,
+      }
+    })
+
+    return user;
+  }
+
+  public async findById(id: string): Promise<Partial<UserDTO> | null> {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id,
+      }
+    })
+
+    return user;
+  }
+
+  // TODO: Implement this method
+  public async checkPassword(userPassword: string, password: string): Promise<boolean> {
+    throw new Error("Method not implemented.");
   }
 }

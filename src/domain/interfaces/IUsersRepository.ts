@@ -1,6 +1,9 @@
-import { CreateUserRequest, CreateUserResponse } from "../dtos/CreateUserDTO";
+import { CreateUserRequest, CreateUserResponse, UserDTO } from "../dtos/CreateUserDTO";
 
+// FIXME: MELHORAR TIPAGENS (as com Partial)
 export interface IUserseRepository {
-  create(data: CreateUserRequest): Promise<CreateUserResponse>;
-  findByEmail(email: string): Promise<boolean>;
+  create(data: Partial<CreateUserRequest>): Promise<CreateUserResponse>;
+  findByEmail(email: string): Promise<Partial<UserDTO> | null>;
+  findById(id: string): Promise<Partial<UserDTO> | null>;
+  checkPassword(userPassword: string, password: string): Promise<boolean>;
 }

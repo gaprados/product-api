@@ -1,12 +1,12 @@
-import { UserRepository } from "../domain/repositories/array-users-repository"
-import { CreateUserService } from "../infra/services/create-user-service"
+import { CreateUserService } from "../app/services/create-user-service"
+import { InMemoryUsersRepository } from "../domain/repositories/in-memory-repository"
 
 describe('Create User', () => {
-  let usersRepository: UserRepository
+  let usersRepository: InMemoryUsersRepository
   let createUserService: CreateUserService
 
   beforeEach(() => {
-    usersRepository = new UserRepository()
+    usersRepository = new InMemoryUsersRepository()
     createUserService = new CreateUserService(usersRepository)
   })
 
@@ -14,7 +14,8 @@ describe('Create User', () => {
     const user = await createUserService.execute({
       name: 'John Doe',
       email: 'johndoe@example.com',
-      password: '123456'
+      password: '123456',
+      confirmation_password: '123456'
     });
 
     expect(user).toHaveProperty('id')
@@ -24,13 +25,15 @@ describe('Create User', () => {
     await createUserService.execute({
       name: 'John Doe',
       email: 'johndoe@example.com',
-      password: '123456'
+      password: '123456',
+      confirmation_password: '123456'
     })
 
     await expect(createUserService.execute({
       name: 'John Doe 2',
       email: 'johndoe@example.com',
-      password: '123456'
+      password: '123456',
+      confirmation_password: '123456'
     })).rejects.toThrow(Error)
   })
 
@@ -38,7 +41,17 @@ describe('Create User', () => {
     await expect(createUserService.execute({
       name: 'John Doe',
       email: 'johndoe@example.com',
-      password: '1234'
+      password: '1234',
+      confirmation_password: '1234'
+    })).rejects.toThrow(Error)
+  })
+
+  it('should not let user create if password and confirm password does not match', async () => {
+    await expect(createUserService.execute({
+      name: 'John Doe',
+      email: 'johndoe@example.com',
+      password: '123456',
+      confirmation_password: '123489'
     })).rejects.toThrow(Error)
   })
 })
