@@ -1,5 +1,6 @@
+import { hash } from "bcrypt";
+import { CreateUserRequest } from "../../domain/dtos/CreateUserDTO";
 import { IUserseRepository } from "../../domain/interfaces/IUsersRepository";
-import { CreateUserRequest } from "../../domain/dtos/CreateUserDTO"
 
 export class CreateUserService {
   constructor(private usersRepository: IUserseRepository) { }
@@ -21,10 +22,12 @@ export class CreateUserService {
       throw new Error('User already exists')
     }
 
+    const hashedPassword = await hash(password, 10)
+
     const user = await this.usersRepository.create({
       name,
       email,
-      password,
+      password: hashedPassword,
     })
 
     return {

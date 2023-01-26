@@ -1,6 +1,7 @@
-import jwt from 'jsonwebtoken'
-import { IUserseRepository } from "../../domain/interfaces/IUsersRepository";
+import { compare } from 'bcrypt';
+import jwt from 'jsonwebtoken';
 import { CreateSessionRequest } from "../../domain/dtos/CreateSessionDTO";
+import { IUserseRepository } from "../../domain/interfaces/IUsersRepository";
 
 export class CreateSessionService {
   constructor(private usersRepository: IUserseRepository) { }
@@ -9,13 +10,13 @@ export class CreateSessionService {
     const user = await this.usersRepository.findByEmail(email)
 
     if (!user) {
-      throw new Error('User not found')
+      throw new Error('Incorrect email/password')
     }
 
-    const checkPassword = await this.usersRepository.checkPassword(user.password!, password)
+    const passwordMatch = await compare(password, user.password!)
 
-    if (!checkPassword) {
-      throw new Error('Incorrect password')
+    if (!passwordMatch) {
+      throw new Error('Incorrect email/password')
     }
 
 

@@ -51,9 +51,4 @@ export class DBUsersRepositoy implements IUserseRepository {
 
     return user;
   }
-
-  // TODO: Implement this method
-  public async checkPassword(userPassword: string, password: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
-  }
 }

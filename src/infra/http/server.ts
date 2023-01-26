@@ -1,12 +1,11 @@
-import express from 'express';
 import cors from 'cors';
-import { CreateUserService } from '../../app/services/create-user-service';
-import { DBUsersRepositoy } from '../../domain/repositories/mysql-users-repository';
-import { InMemoryUsersRepository } from '../../domain/repositories/in-memory-repository';
+import express from 'express';
+import { checkJwt } from '../../app/middlewares/checkJwt';
 import { CreateSessionService } from '../../app/services/create-session-service';
-
-import jwt from 'jsonwebtoken'
+import { CreateUserService } from '../../app/services/create-user-service';
 import { GetUserById } from '../../app/services/get-user-by-id-service';
+import { InMemoryUsersRepository } from '../../domain/repositories/in-memory-repository';
+import { DBUsersRepositoy } from '../../domain/repositories/mysql-users-repository';
 
 const app = express();
 
@@ -46,20 +45,8 @@ app.post('/users', async (req, res) => {
   }
 })
 
-
-//TODO: Create a middleware to validate token and create route service
-app.get('/me', async (req, res) => {
-  const token = req.headers["authorization"];
-
-  const [, tokenValue] = token?.split(' ') || [];
-
-  if (!token) {
-    return res.status(401).json({ error: 'Token is required' });
-  }
-
-  const userId = jwt.verify(tokenValue, 'MYSECRETKEY')
-
-  const user = await GetUserByIdService.execute(userId.sub as string)
+app.get('/me', checkJwt, async (req, res) => {
+  const user = await GetUserByIdService.execute(req.userId)
 
   return res.json(user)
 })
