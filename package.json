@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "tsnd --transpile-only --ignore-watch node_modules --inspect --exit-child --respawn src/infra/http/server.ts",
+    "build": "tsc",
+    "start": "node dist/src/infra/http/server.js",
     "test": "jest",
     "test-watch": "jest --watch"
   },

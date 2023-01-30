@@ -18,6 +18,10 @@ const createUserService = new CreateUserService(inMemoryUsersRepositoy);
 const createSessionService = new CreateSessionService(inMemoryUsersRepositoy);
 const GetUserByIdService = new GetUserById(inMemoryUsersRepositoy);
 
+app.get('/test', (req, res) => {
+  return res.json({ message: "Hello, Im working!" })
+})
+
 app.post('/sessions', async (req, res) => {
   try {
     const { email, password } = req.body;
