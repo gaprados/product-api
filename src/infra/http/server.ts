@@ -12,11 +12,11 @@ const app = express();
 app.use(cors())
 app.use(express.json());
 
-const inMemoryUsersRepositoy = new InMemoryUsersRepository();
+// const inMemoryUsersRepositoy = new InMemoryUsersRepository();
 const usersRepository = new DBUsersRepositoy();
-const createUserService = new CreateUserService(inMemoryUsersRepositoy);
-const createSessionService = new CreateSessionService(inMemoryUsersRepositoy);
-const GetUserByIdService = new GetUserById(inMemoryUsersRepositoy);
+const createUserService = new CreateUserService(usersRepository);
+const createSessionService = new CreateSessionService(usersRepository);
+const GetUserByIdService = new GetUserById(usersRepository);
 
 app.get('/test', (req, res) => {
   return res.json({ message: "Hello, Im working!" })
